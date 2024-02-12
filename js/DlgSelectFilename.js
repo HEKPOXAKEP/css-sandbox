@@ -12,6 +12,9 @@ class DlgSelectFilename
     this.setupEvents(opts);
   }
 
+  /*
+    Загружаем список файлов
+  */
   prepareDlg() {
     this.boundLoadSuccess=this.loadSuccess.bind(this);
 
@@ -25,12 +28,15 @@ class DlgSelectFilename
     });
   }
 
+  /*
+    Связываем события с методами и формируем массив кнопок диалога
+  */
   setupEvents(opts) {
     this.boundBtnLoadClick=this.btnLoadClick.bind(this);
     this.boundBtnDeleteClick=this.btnDeleteClick.bind(this);
     this.boundBtnCancelClick=this.btnCancelClick.bind(this);
 
-    this.boundDoDeleteFile=this.doDeleteFile.bind(this);
+    this.boundDoDeleteFile=this.doDeleteFile.bind(this);  // вызывается из confirmation delete dlg
 
     opts.buttons=[
       {text: 'Load', click: this.boundBtnLoadClick},
@@ -38,10 +44,13 @@ class DlgSelectFilename
       {text: 'Cancel', click: this.boundBtnCancelClick}
     ];
 
-    /*opts.width=300;
-    opts.height=220;*/
+    opts.width='50%';
+    //opts.height=220;
   }
 
+  /*
+    Список файлов загружен, заполняем <select> дилога
+  */
   loadSuccess(ans) {
     if (ans.err) {
       const
@@ -54,6 +63,9 @@ class DlgSelectFilename
     }
   }
 
+  /*
+    Заолняем список <select>
+  */
   fillFilesList(fls) {
     var
       lst='';
@@ -65,28 +77,41 @@ class DlgSelectFilename
     $('#files-list').html(lst);
   }
 
+  /*
+    Выводит предупреждение, что файл не выбран
+  */
   fileNotSelected() {
     dlgCtrl.showDlg('warn','Please, select file name from the list.',_WARN);
   }
 
+  /*
+    Запрашиваем подтверждение на удаление файла и удаляем, если подтверждено
+  */
   deleteFileIfConfirmed() {
+    const
+      self=this;
+
     dlgCtrl.showDlg(
       'confirm',
-      `The file ${this.selectedItem}.json will be permanently deleted and cannot be recovered. Are you sure?`,
+      'File '+this.selectedItem.text()+'.json will be permanently deleted and cannot be recovered. Are you sure?',
       _CONFIRM,
       {
         buttons: [
           {text: 'Yes', click: this.boundDoDeleteFile},
-          {text: 'No', click: () => {dlgCtrl.destroyDlg(this)}}
+          {text: 'No', click: function() { dlgCtrl.destroyDlg(this); } }
         ]
-      },
-      function(dlg,opts) {
-        this.confirmationDlg=dlg;
-        console.info(dlg,opts); ///dbg
+      }
+      ,function(dlg,opts) {
+        // beforeOpen callback
+        self.confirmDlg=dlg;
+        //console.info(dlg,opts); ///dbg
       }
     );
   }
 
+  /*
+    Удаляет файл на сервере и из списка в диалоге
+  */
   doDeleteFile() {
     const
       self=this;
@@ -96,18 +121,25 @@ class DlgSelectFilename
       type: 'get',
       dataType: 'json',
       data: {'op':'rm','fn':self.selectedItem.text()},
-      error: app.ajaxError,
+      error: (xhr,txtStatus,errThrown) => {
+        app.ajaxError(xhr,txtStatus,errThrown);
+        dlgCtrl.destroyDlg(self.confirmDlg);
+      },
       success: (ans) => {
         if (ans.err) {
           console.error(ans.msg);
           dlgCtrl.showDlg('error',ans.msg,_ERROR);
         } else {
           self.selectedItem.remove();
+          dlgCtrl.destroyDlg(self.confirmDlg);
         }
       }
     });
   }
 
+  /*
+    Кнопка [Load]
+  */
   btnLoadClick(ev) {
     const
       fn=$('#files-list option:selected').text();
@@ -123,6 +155,9 @@ class DlgSelectFilename
     }
   }
 
+  /*
+    Кнопка [Delete]
+  */
   btnDeleteClick(ev) {
     this.selectedItem=$('#files-list option:selected');
 
@@ -137,6 +172,9 @@ class DlgSelectFilename
     this.deleteFileIfConfirmed();
   }
 
+  /*
+    Кнопка [Cancel]
+  */
   btnCancelClick(ev) {
     dlgCtrl.destroyDlg(this.dlg);
   }
