@@ -1,12 +1,31 @@
 <?php
+/*
+  =======================================
+  General Data Storage manipulation class
+  =======================================
+*/
+require_once('MultiLang.php');
 require_once('functions.php');
 
 class DataStorage
 {
   /*
+    Проверить и если нужно создать каталог для данных
+  */
+  private static function checkDataDir(): bool {
+    $dd='..'.DIRECTORY_SEPARATOR.'data';
+    if (file_exists($dd)) return(true);
+    else return(mkdir($dd));
+  }
+
+  /*
     Запись данных в файл POST['ed-filename']
   */
   public static function saveData(): array {
+    if (!DataStorage::checkDataDir()) {
+      return(['err'=>-1971,'msg'=>WZ('E_ChkDataDirErr')]);
+    }
+
     $pi=pathinfo($_POST['ed-filename']);
     $fn='..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.$pi['filename'].'.json';
 
@@ -25,6 +44,9 @@ class DataStorage
     Загрузка данных из файла GET['ed-filename']
   */
   public static function loadData() {
+    if (!DataStorage::checkDataDir()) {
+      return(['err'=>-1971,'msg'=>WZ('E_ChkDataDirErr')]);
+    }
     /*$pi=pathinfo($_GET['ed-filename']);
     if (mb_strtolower($pi['extension']) !=='json') $ext='.json';
     else $ext='';*/
@@ -42,6 +64,10 @@ class DataStorage
     Получение списка фалов данных в каталоге data
   */
   public static function getFileslist() {
+    if (!DataStorage::checkDataDir()) {
+      return(['err'=>-1971,'msg'=>WZ('E_ChkDataDirErr')]);
+    }
+
     $ls=glob('..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'*.json');
 
     foreach($ls as $k=>&$v) {
