@@ -12,14 +12,15 @@ if (!empty($_GET['op'])) {
 }
 
 if (empty($op)) {
-  $rez=['err'=>-1971,'msg'=>'Operation code not specified.'];
+  $rez=_rez(1971,'Operation code not specified.');
 } else {
   $rez=match($op) {
     'sv' => DataStorage::saveData(),
     'ld' => DataStorage::loadData(),
     'ls' => DataStorage::getFileslist(),
     'rm' => DataStorage::deleteDatafile(),
-    default => ['err'=>-1971,'msg'=>"Unrecognized opcode \"{$op}\""],
+    //default => ['err'=>-1971,'msg'=>"Unrecognized opcode \"{$op}\""],
+    default => _rez(-1971, "Unrecognized opcode \"{$op}\"")
   };
 }
 

@@ -13,7 +13,7 @@ class DataStorage
     Проверить и если нужно создать каталог для данных
   */
   private static function checkDataDir(): bool {
-    $dd='..'.DIRECTORY_SEPARATOR.'data';
+    $dd=dataDir();
     if (file_exists($dd)) return(true);
     else return(mkdir($dd));
   }
@@ -23,11 +23,11 @@ class DataStorage
   */
   public static function saveData(): array {
     if (!DataStorage::checkDataDir()) {
-      return(['err'=>-1971,'msg'=>WZ('E_ChkDataDirErr')]);
+      return(_rez(-1971, WZ(E_ChkDataDirErr)));
     }
 
     $pi=pathinfo($_POST['ed-filename']);
-    $fn='..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.$pi['filename'].'.json';
+    $fn=dataDir().$pi['filename'].'.json';
 
     file_put_contents(
       $fn,
@@ -37,7 +37,7 @@ class DataStorage
       )
     );
 
-    return(['err'=>0,'msg'=>$_POST['ed-filename'].' saved.']);
+    return(_rez(0, WZZ(I_FileSaved,['fn'=>$_POST['ed-filename']])));
   }
 
   /*
@@ -45,19 +45,16 @@ class DataStorage
   */
   public static function loadData() {
     if (!DataStorage::checkDataDir()) {
-      return(['err'=>-1971,'msg'=>WZ('E_ChkDataDirErr')]);
+      return(_rez(-1971, WZ(E_ChkDataDirErr)));
     }
-    /*$pi=pathinfo($_GET['ed-filename']);
-    if (mb_strtolower($pi['extension']) !=='json') $ext='.json';
-    else $ext='';*/
-    $fn='..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.$_GET['ed-filename'].'.json';
+    $fn=dataDir().$_GET['ed-filename'].'.json';
 
     if (!file_exists($fn)) {
-      return(['err'=>-1971,'msg'=>"File {$fn} not exists."]);
+      return(_rez(-1971,WZZ(E_FileNotExists,['fn'=>$fn])));
     }
 
     $data=json_decode(file_get_contents($fn),JSON_OBJECT_AS_ARRAY);
-    return(array_merge(['err'=>0,'msg'=>"{$fn} loaded."],$data));
+    return(array_merge(['err'=>0,'msg'=>WZZ(I_FileLoaded,['fn'=>$fn])],$data));
   }
 
   /*
@@ -65,26 +62,31 @@ class DataStorage
   */
   public static function getFileslist() {
     if (!DataStorage::checkDataDir()) {
-      return(['err'=>-1971,'msg'=>WZ('E_ChkDataDirErr')]);
+      return(_rez(-1971, WZ(E_ChkDataDirErr)));
     }
 
-    $ls=glob('..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'*.json');
+    $ls=glob(dataDir().'*.json');
 
     foreach($ls as $k=>&$v) {
       $v=basename($v,'.json');
     }
 
-    return(['err'=>0,'msg'=>'ok','fileslist'=>$ls]);
+    return(['err'=>0,'msg'=>WZ(I_Ok),'fileslist'=>$ls]);
   }
 
   /*
     Удаление файла
   */
   public static function deleteDatafile() {
-    $fn='..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.$_GET['fn'].'.json';
+    $fn=dataDir().$_GET['fn'].'.json';
+
+    if (!file_exists($fn)) {
+      return(['err'=>-1971,'msg'=>WZZ(E_FileNotExists,['fn'=>$fn])]);
+    }
+
     unlink($fn);
 
-    return(['err'=>0,'msg'=>"File {$fn} deleted.",'fn'=>$fn]);
+    return(['err'=>0,'msg'=>WZZ(I_FileDeleted,['fn'=>basename($fn)])]);
   }
 }
 ?>
