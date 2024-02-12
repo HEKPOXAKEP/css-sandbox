@@ -1,4 +1,5 @@
 <?php
+require_once('MultiLang.php');
 require_once('functions.php');
 require_once('DataStorage.php');
 
@@ -20,16 +21,6 @@ if (empty($op)) {
     'rm' => DataStorage::deleteDatafile(),
     default => ['err'=>-1971,'msg'=>"Unrecognized opcode \"{$op}\""],
   };
-/*  switch ($op) {
-    case 'sv':
-      $rez=['err'=>0,'msg'=>'ok','data'=>DataStorage::saveData()];
-      break;
-    case 'ld':
-      $rez=['err'=>0,'msg'=>'ok','data'=>DataStorage::loadData()];
-      break;
-    default:
-      $rez=['err'=>-1971,'msg'=>"Unrecognized opcode \"{$op}\""];
-  }*/
 }
 
 exit(json_encode($rez));
