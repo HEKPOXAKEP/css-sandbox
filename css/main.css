@@ -1,0 +1,59 @@
+@charset "utf-8";
+/*
+  Стили главных элементов разметки страницы
+*/
+
+#code-block {
+  display: flex;
+/*  width: 100%;*/
+  flex-flow: row nowrap;
+  align-items: stretch;
+  column-gap: 15px;
+  margin: 3px 10px;
+}
+
+#group-css,#group-html {
+  flex: 1;
+  background-color: #f0f0f0;
+}
+
+#code-css,#code-html {
+  width: 100%;
+  resize: none;
+  margin-bottom: 3px;
+}
+
+.info-pane {
+  color: red;
+}
+
+.form-button {
+  padding: 0 7px;
+  font-size: inherit;
+  background-color: lightgray;
+  border: 2px solid silver;
+  border-radius: 3px;
+}
+
+#bottom-block {
+  padding: 3px 10px;
+}
+
+.l-gap17 {
+  margin-left: 17px;
+}
+
+#construction-line {
+  display: flex;
+  justify-content: space-around;
+  font-family: impact;
+  font-size: 14px;
+  font-weight: 200;
+  text-align: center;
+  padding: 4px 0;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  background-image: url("../img/do-not-cross-01.png");
+  background-repeat: repeat-x;
+  background-size: contain;
+}
