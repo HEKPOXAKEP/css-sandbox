@@ -1,5 +1,10 @@
 <?php
-function makeRezArray(int $err,string $msg,string $data): array {
-  return ['err'=>$err,'msg'=>$msg,'data'=>$data];
+function dataDir(): string {
+  return('..'.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR);
 }
+
+function _rez(int $err, string $msg): array {
+  return(['err'=>$err, 'msg'=>$msg]);
+}
+
 ?>
