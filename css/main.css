@@ -2,10 +2,12 @@
 /*
   Стили главных элементов разметки страницы
 */
+#mainHeader {
+  margin-bottom: 7px;
+}
 
 #code-block {
   display: flex;
-/*  width: 100%;*/
   flex-flow: row nowrap;
   align-items: stretch;
   column-gap: 15px;
@@ -15,32 +17,41 @@
 #group-css,#group-html {
   flex: 1;
   background-color: #f0f0f0;
+  padding-bottom: 7px;
 }
 
 #code-css,#code-html {
   width: 100%;
   resize: none;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
 
 .info-pane {
+  font-weight: normal;
   color: red;
 }
 
+input[type="color"] {
+  height: 32px;
+}
+
 .form-button {
-  padding: 0 7px;
+  padding: 2px 4px 0 4px;
   font-size: inherit;
   background-color: lightgray;
   border: 2px solid silver;
   border-radius: 3px;
+  box-shadow: 2px 2px 3px;
+  cursor: pointer;
 }
 
-#bottom-block {
+.form-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.controls-block {
   padding: 3px 10px;
-}
-
-.l-gap17 {
-  margin-left: 17px;
 }
 
 #construction-line {

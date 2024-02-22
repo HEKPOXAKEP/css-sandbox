@@ -15,4 +15,5 @@ const
 var
   app=null,
   modCtrl=new ModCtrl(),
-  dlgCtrl=new JqUIDlgCtrl('dialogs',modCtrl);
+  dlgCtrl=new JqUIDlgCtrl('dialogs',modCtrl),
+  toolbarCtrl=new ToolbarCtrl();
