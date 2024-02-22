@@ -3,7 +3,7 @@
 */
 class DlgSelectFilename
 {
-  selectedItem=null;  // selected item jq object
+  selectedItem=null;  // selected item jQ object
   confirmDlg=null;    // confirmation dlg obj
 
   constructor(dlg,opts) {
@@ -149,7 +149,7 @@ class DlgSelectFilename
       $('#ed-filename').val(fn);
       dlgCtrl.destroyDlg(this.dlg);
       
-      $('#btn-load').trigger('click');
+      $('#toolbtn-load').trigger('click');
     } else {
       this.fileNotSelected();
     }
