@@ -12,7 +12,7 @@ if (!empty($_GET['op'])) {
 }
 
 if (empty($op)) {
-  $rez=_rez(1971,'Operation code not specified.');
+  $rez=_rez(1971,WZZ(E_NoOpCode,[]));
 } else {
   $rez=match($op) {
     'sv' => DataStorage::saveData(),
@@ -20,7 +20,7 @@ if (empty($op)) {
     'ls' => DataStorage::getFileslist(),
     'rm' => DataStorage::deleteDatafile(),
     //default => ['err'=>-1971,'msg'=>"Unrecognized opcode \"{$op}\""],
-    default => _rez(-1971, "Unrecognized opcode \"{$op}\"")
+    default => _rez(-1971,WZZ(E_UnrecognizedOpCode,['op'=>$op]))
   };
 }
 
