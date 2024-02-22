@@ -32,7 +32,9 @@ class DataStorage
     file_put_contents(
       $fn,
       json_encode(
-        ['code-css'=>$_POST['code-css'],'code-html'=>$_POST['code-html']],
+        [
+          'ed-name-descr'=>$_POST['ed-name-descr'],'code-css'=>$_POST['code-css'],'code-html'=>$_POST['code-html']
+        ],
         JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
       )
     );
