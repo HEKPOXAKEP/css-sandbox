@@ -10,6 +10,7 @@ class App {
   constructor() {
     this.initGlobals();
     this.loadVersionInfo();
+    this.initToolbar();
     this.initEvents();
   }
 
@@ -17,6 +18,7 @@ class App {
     Инициализация глобальных данных
   */
   initGlobals() {
+    ///
   }
 
   /*
@@ -41,31 +43,49 @@ class App {
   }
 
   /*
-    Инициализация основных событий
+    Загрузка и инициализация модуля главного талбара
   */
-  initEvents() {
-    this.bindEvents();
-
-    $('#btn-clear-css').click(this.boundBtnClearClick);
-    $('#btn-clear-html').click(this.boundBtnClearClick);
-
-    $('#btn-test').click(this.boundBtnTestClick);
-    $('#btn-save').click(this.boundBtnSaveClick);
-    $('#btn-load').click(this.boundBtnLoadClick);
-    $('#btn-clear-all').click(this.boundBtnClearAllClick);
-    $('#btn-about').click(this.boundBtnAboutClick);
+  initToolbar() {
+    toolbarCtrl.loadToolbar(
+      'mainToolbar',
+      {
+        oCss: {href: 'css/MainToolbar.css'},
+        oHtml: {url: 'html/MainToolbar.html'},
+        oJs: {src: 'js/MainToolbar.js'}
+      },
+      'mainToolbar');
   }
 
   /*
-    Привязка событий к App.this
+    Инициализация событий
   */
-  bindEvents() {
-    this.boundBtnClearClick=this.btnClearClick.bind(this);
-    this.boundBtnTestClick=this.btnTestClick.bind(this);
-    this.boundBtnSaveClick=this.btnSaveClick.bind(this);
-    this.boundBtnLoadClick=this.btnLoadClick.bind(this);
-    this.boundBtnClearAllClick=this.btnClearAllClick.bind(this);
-    this.boundBtnAboutClick=this.btnAboutClick.bind(this);
+  initEvents() {
+    this.#bindHandler('btn-clear-css','click',this.btnClearClick);
+    this.#bindHandler('btn-clear-html','click',this.btnClearClick);
+    this.#bindHandler(document,'keydown',this.documentKeydown);
+  }
+
+  /*
+    Привязывает обработчик evHandler события evType к элементу el
+  */
+  #bindHandler(el,evType,evHandler) {
+    if (typeof el ==='string') el=document.getElementById(el);
+
+    if (typeof el !=='object')
+      dlgCtrl.showDlg('error','Couldn\'t bind event handler to '+el,_ERROR);
+    else
+      el.addEventListener(evType,evHandler.bind(this));
+  }
+
+  /*
+    Перехват keydown для всего document
+  */
+  documentKeydown(ev) {
+    if ((ev.keyCode ==9 && !ev.shiftKey) && (ev.target.id ==='code-css' || ev.target.id ==='code-html')) {
+      ev.preventDefault();
+      replaceSelection(ev.target,'  ',false);
+      return false;
+    }
   }
 
   /*
@@ -84,18 +104,31 @@ class App {
   }
 
   /*
-    Кнопки [Clear]
+    Кнопка [Help]
+  */
+  btnHelpClick(ev) {
+    dlgCtrl.showDlg('info','<b>Not implemented yet.</b>',_INFO);
+  }
+
+  /*
+    Кнопки [Clear] для css и html
   */
   btnClearClick(ev) {
+    var
+      el=ev.target;
+
     ev.preventDefault();
-    switch (ev.target.id.split('-').slice(-1)[0]) {
+
+    if (ev.target.nodeName =='IMG') el=el.parentNode;
+
+    switch (el.id.split('-').slice(-1)[0]) {
       case 'css':
         this.clearCssCode();
         break;
       case 'html':
         this.clearHtmlCode();
         break;
-      default: console.warn('Unknown btn.id = '+ev.target.id);
+      default: console.warn('Unknown button clicked!',ev);
     }
   }
 
@@ -147,12 +180,13 @@ class App {
       formData=new FormData(document.forms.mainForm);
 
     formData.append('op','sv');
+    formData.append('ed-filename',$('#ed-filename').val());
 
     $.ajax({
       url: 'php/DataStorageCtrl.php',
       type: 'post',
       dataType: 'json',
-      //data: $('#mainForm').serialize(),
+      ////data: $('#mainForm').serialize(),
       processData: false,  // this and
       contentType: false,  // this - wtf?
       data: formData,
@@ -209,6 +243,7 @@ class App {
       dlgCtrl.showDlg('error',s,_ERROR);
     } else {
       ///console.log(ans); ///dbg
+      $('#ed-name-descr').val(ans['ed-name-descr']);
       $('#code-css').val(ans['code-css']);
       $('#code-html').val(ans['code-html']);
     }
@@ -252,7 +287,7 @@ class App {
 
     if (fn =='') {
       $('#ed-filename').focus();
-      $('#ed-filename-info').text('File name not specified').show().fadeOut(2000);
+      $('#ed-filename-info').html('&nbsp- file name not specified').show().fadeOut(2000);
       return;
     }
 
@@ -267,11 +302,49 @@ class App {
   }
 
   /*
+    Кнопка [Color]
+  */
+  btnColorPickerClick(ev) {
+    var
+      btn=document.getElementById('toolbtn-color_picker'),
+      ed=document.getElementById('code-css'),
+      clr=getSelection(ed);
+
+    ///console.log('clr.txt=',clr.txt);
+    if (clr.len ==7) btn.value=clr.txt;
+    ///console.log('color picker click ',btn.value);
+  }
+
+  /*
+    Изменение цвета в диалоге выбора цвета
+  */
+  colorPickerChanging(ev) {
+    ///console.log('changing to ',ev.target.value);
+  }
+
+  /*
+    При закрытии диалога выбора цвета
+  */
+  colorPickerChanged(ev) {
+    var
+      el=document.getElementById('code-css');
+
+    replaceSelection(el,ev.target.value);
+    ///console.log('--done',ev.target.value);
+  }
+
+  /*
     Проверяем css, html и если chkFilname==true, то и поле ed-filename
   */
   checkFormData(chkFilename=false) {
     const
-      s='Field must be filled in';
+      s='&nbsp; - field must be filled in';
+
+    if ((chkFilename) && ($('#ed-filename').val() =='')) {
+      $('#ed-filename').focus();
+      $('#ed-filename-info').html(s).show().fadeOut(2000);
+      return false;
+    }
 
     if (($('#code-css').val() =='') || ($('#code-html').val() =='')) {
       if ($('#code-css').val() =='') {
@@ -281,13 +354,6 @@ class App {
         $('#code-html').focus();
         $('#code-html-info').text(s).show().fadeOut(2000);
       }
-
-      return false;
-    }
-
-    if ((chkFilename) && ($('#ed-filename').val() =='')) {
-      $('#ed-filename').focus();
-      $('#ed-filename-info').text(s).show().fadeOut(2000);
       return false;
     }
 

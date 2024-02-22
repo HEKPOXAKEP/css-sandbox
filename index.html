@@ -15,10 +15,10 @@
   <script src='../ls-www-lib/ls-www-common.js'></script>
   <script src='../ls-www-lib/mod-control.js'></script>
   <script src='../ls-www-lib/ui/JqUIDialogs/JqUIDlgCtrl.js'></script>
-  <!--script src='../ls-www-lib/ui/Toolbar/Toolbar.js'></script>
-  <script src='../ls-www-lib/ui/Toolbar/ToolbarControl.js'></script-->
+  <script src='../ls-www-lib/ui/Toolbar/Toolbar.js'></script>
+  <script src='../ls-www-lib/ui/Toolbar/ToolbarControl.js'></script>
   <link href='../ls-www-lib/ui/JqUIDialogs/JqUIDialogs.css' rel='stylesheet'>
-  <!--link href='../ls-www-lib/ui/Toolbar/Toolbar.css' rel='stylesheet'-->
+  <link href='../ls-www-lib/ui/Toolbar/Toolbar.css' rel='stylesheet'>
   <!-- модули проекта -->
   <link href='css/global.css' rel='stylesheet'>
   <link href='css/main.css' rel='stylesheet'>
@@ -36,35 +36,25 @@
 </head>
 <body>
   <div id='mainHeader'></div>
-  <!--div id='mainToolbar' class='toolbar'></div-->
+  <div id='mainToolbar' class='toolbar'></div>
   <form id='mainForm' name='mainForm'>
+    <div class='controls-block'>
+      <label for='ed-name-descr'>Name/description: </label>
+      <input id='ed-name-descr' name='ed-name-descr' form='mainForm' type='text' />
+    </div>
     <div id='code-block'>
       <fieldset id='group-css'>
         <legend>CSS</legend>
         <textarea id='code-css' name='code-css' rows='12'></textarea>
         <div id='code-css-info' class='info-pane'></div>
-        <button id='btn-clear-css' class='form-button' title='Clear css code'>Clear</button>
+        <button id='btn-clear-css' class='form-button' title='Clear css code'><img src='img/broom-clear-64.png' /></button>
       </fieldset>
       <fieldset id='group-html'>
         <legend>HTML</legend>
         <textarea id='code-html' name='code-html' rows='12'></textarea>
         <div id='code-html-info' class='info-pane'></div>
-        <button id='btn-clear-html' class='form-button' title='Clear html code'>Clear</button>
+        <button id='btn-clear-html' class='form-button' title='Clear html code'><img src='img/broom-clear-64.png' /></button>
       </fieldset>
-    </div>
-    <div id='bottom-block'>
-      <button id='btn-test' class='form-button' title='Test css+html code'>Test</button>
-      <label class='l-gap17' title='Filename w/o path and extension'>Filename: <input id='ed-filename' name='ed-filename' type='text'></label>
-      <span id='ed-filename-info' class='info-pane'></span>
-      <button id='btn-save' class='form-button'>Save</button>
-
-      <label title='Check this box to select file from list' class='l-gap17'>
-        Select from list - <input id='chkbx-select-filename' type='checkbox'></label>
-      <button id='btn-load' class='form-button' title='Load data'>Load</button>
-
-      <button id='btn-clear-all' class='form-button l-gap17' title='Clear both css and html code'>Clear all</button>
-
-      <span class='l-gap17'></span><button id='btn-about' class='form-button l-gap17' title='About the project'>About</button>
     </div>
   </form>
   <div id='construction-line'><span>CONSTRUCTION AREA</span><span>CONSTRUCTION AREA</span><span>CONSTRUCTION AREA</span></div>
