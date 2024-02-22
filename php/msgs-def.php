@@ -15,5 +15,7 @@ const
 
   // Error msg identifiers
   E_FileNotExists=3001,
-  E_ChkDataDirErr=3002;
+  E_ChkDataDirErr=3002,
+  E_NoOpCode=3003,
+  E_UnrecognizedOpCode=3004;
 ?>

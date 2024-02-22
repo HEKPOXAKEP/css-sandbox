@@ -12,12 +12,6 @@ function WZ(int $mi): string {
   return(MSGS[$mi]);
 }
 
-/*function WZZ(string $mi, mixed ...$args): string {
-  //print_r($args); return 'qwerty';
-  $s=MSGS[$mi];
-  return(sprintf($s,$args));
-}*/
-
 /*
   Работает, как vsprintf, но вместо индекса аргументов $args принимает ключи.
 

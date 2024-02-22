@@ -15,5 +15,7 @@ const
     // --- Error messages
     E_FileNotExists=>'File %fn$s does not exists.',
     E_ChkDataDirErr=>'CheckDataDir() returned an error.',
+    E_NoOpCode=>'Operation code not specified.',
+    E_UnrecognizedOpCode=>'Unrecognized opcode "%op$s}".',
   ];
 ?>
